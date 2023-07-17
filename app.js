@@ -181,6 +181,82 @@ app.get("/agenda", async (request, response) => {
   }
 });
 
+//POST                      API - 4
+
+app.post("/todos/", async (request, response) => {
+  const todoDetails = request.body;
+  const { id, todo, priority, status, category, dueDate } = todoDetails;
+  const addNewTodo = `
+  INSERT INTO 
+  todo(id, todo, priority, status, category, due_date)
+  VALUES(
+      ${id},
+      '${todo}',
+      '${priority}',
+      '${status}',
+      '${category}',
+      '${dueDate}'
+  );`;
+  await db.run(addNewTodo);
+  response.send("Todo Successfully Added");
+});
+
+//POst                      API - 5
+
+app.put("/todos/:todoId/", async (request, response) => {
+  const { todoId } = request.params;
+  const { todo, priority, status, category, dueDate } = request.body;
+  let updateQuery;
+  let sendResponse;
+  if (todo !== undefined) {
+    updateQuery = `
+        UPDATE todo
+        SET 
+            todo = '${todo}'
+        WHERE
+            id = ${todoId}`;
+    sendResponse = "Todo";
+  }
+  if (priority !== undefined) {
+    updateQuery = `
+        UPDATE todo
+        SET 
+            priority = '${priority}'
+        WHERE
+            id = ${todoId}`;
+    sendResponse = "Priority";
+  }
+  if (status !== undefined) {
+    updateQuery = `
+        UPDATE todo
+        SET 
+            status = '${status}'
+        WHERE
+            id = ${todoId}`;
+    sendResponse = "Status";
+  }
+  if (category !== undefined) {
+    updateQuery = `
+        UPDATE todo
+        SET 
+            category = '${category}'
+        WHERE
+            id = ${todoId}`;
+    sendResponse = "Category";
+  }
+  if (dueDate !== undefined) {
+    updateQuery = `
+        UPDATE todo
+        SET 
+            due_date = '${dueDate}'
+        WHERE
+            id = ${todoId}`;
+    sendResponse = "Due Date";
+  }
+  const dbResponse = await db.run(updateQuery);
+  response.send(`${sendResponse} Updated`);
+});
+
 // DELETE                   API - 6
 
 app.delete("/todos/:todoId/", async (request, response) => {
