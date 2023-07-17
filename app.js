@@ -27,11 +27,12 @@ initializeDbAndServer();
 
 module.exports = app;
 
-const dateFormat = (dateObj) => {
-  return format(new Date(dateObj), "yyyy-MM-dd");
-};
-
-//convertSnakeCaseIntoCamelCase
+// const middleWareFunctionForValidDay = (request, response, next) => {
+//   const dateFormat = (request.query.date) => {
+//     return format(new Date(dateObj), "yyyy-MM-dd");
+//   };
+// };
+//convertSnakeCaseIntoCamelCase;
 
 const convertSnakeIntoCamel = (item) => {
   return {
@@ -158,21 +159,20 @@ app.get("/todos/:todoId/", async (request, response) => {
 
 //GET                       API - 3
 
-app.get("/agenda/", async (request, response) => {
+app.get("/agenda", async (request, response) => {
   const { date = "" } = request.query;
-  let dateObj = new Date(date);
-  console.log(isValid(dateObj));
+  let dateFormatted = format(new Date(date), "yyyy-MM-dd");
   const getTodoQuery = `
       SELECT *
       FROM todo
       WHERE 
-      due_date = '${date}'`;
+      due_date = '${dateFormatted}'`;
   const dbResponse = await db.all(getTodoQuery);
-  if (isValid(dateObj) === false) {
+
+  if (dbResponse.length === 0) {
     response.status(400);
     response.send("Invalid Due Date");
   } else {
-    console.log(dateFormat(date));
     response.send(
       dbResponse.map((each) => {
         return convertSnakeIntoCamel(each);
