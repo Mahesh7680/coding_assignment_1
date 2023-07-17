@@ -7,4 +7,14 @@ GET http://localhost:3000/todos/?search_q=Buy
 DELETE http://localhost:3000/todos/10
 
 ###
-GET http://localhost:3000/agenda/?date=2021-13-12
+GET http://localhost:3000/agenda/?date=2021-10-12
+
+
+###
+
+PUT http://localhost:3000/todos/10/
+Content-Type: application/json
+
+{
+    "status": "DONE"
+}
